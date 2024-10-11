@@ -7,8 +7,8 @@ var = "TOTSOMC"
 
 # Define landunit types
 typlunit_name = np.array([
-    "vegetated_or_bare_soil",
-    "crop",
+    'vegetated_or_bare_soil',
+    'crop',
     "UNUSED",
     "landice_multiple_elevation_classes",
     "deep_lake",
@@ -33,7 +33,8 @@ casename = "b.e21.B1850.f09_g17.FLAT10ctrl-esm.001.leafcn_high.bgc_spinup"
 domain = "lnd"
 hist_type = "h4"
 
-dataset = xr.open_mfdataset(f"{indir}/{casename}/{domain}/hist/{casename}.{components[domain]}.{hist_type}.*.nc")
+dataset = xr.open_mfdataset(
+    f"{indir}/{casename}/{domain}/hist/{casename}.{components[domain]}.{hist_type}.*.nc")
 print("finished loading dataset")
 
 # Define variables
@@ -82,11 +83,13 @@ for t in range(nts):
         jxy = land1d_jxy.isel(time=t, landunit=lunit).values - 1
         ixy = land1d_ixy.isel(time=t, landunit=lunit).values - 1
 
-        gridded[jxy, ixy, ityplunit] = dataset[var].isel(time=t, landunit=lunit).values
+        gridded[jxy, ixy, ityplunit] = dataset[var].isel(
+            time=t, landunit=lunit).values
 
     gridded_data.append(gridded)
 
-gridded_data = xr.concat(gridded_data, dim="time").assign_coords({"time": dataset["time"]})  
+gridded_data = xr.concat(gridded_data, dim="time").assign_coords(
+    {"time": dataset["time"]})
 
 print(f"time to grid {var}: {time.time() - start}")
 
@@ -94,6 +97,8 @@ print(f"time to grid {var}: {time.time() - start}")
 if os.path.exists(f"{outdir}/{casename}/{domain}/hist") is False:
     os.makedirs(f"{outdir}/{casename}/{domain}/hist")
 
-time_range = str(ts[0].values)[:7].replace("-", "") + "-" + str(ts[-1].values)[:7].replace("-", "")
+time_range = str(ts[0].values)[:7].replace("-", "") + \
+    "-" + str(ts[-1].values)[:7].replace("-", "")
 
-gridded_data.to_netcdf(f"{outdir}/{casename}/{domain}/hist/{casename}.{components[domain]}.{hist_type}.{time_range}.{var.upper()}.vegonly.nc")
+gridded_data.to_netcdf(
+    f"{outdir}/{casename}/{domain}/hist/{casename}.{components[domain]}.{hist_type}.{time_range}.{var.upper()}.vegonly.nc")
